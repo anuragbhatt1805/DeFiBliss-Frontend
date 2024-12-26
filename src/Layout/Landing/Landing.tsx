@@ -10,6 +10,7 @@ import ChooseDefiBliss from "./ChooseDefiBliss";
 import Timeline from "./Timeline";
 import CommunityFeedback from "./CommunityFeedback";
 import StartAuthenticate from "./StartAuthenticate";
+import Footer from "../../Components/Footer";
 
 export function Landing() {
   return (
@@ -97,6 +98,8 @@ export function Landing() {
               </Box>
         </Container>
       </Box>
+
+      <Footer />
     </>
   );
 }

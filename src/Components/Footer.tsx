@@ -39,13 +39,19 @@ export default function Footer() {
               Authenticate and secure your digital artwork with blockchain technology.
             </Typography>
             <Box display="flex" gap={2}>
-              <Link href="#" color="inherit">
+                <Link href="#" color="inherit" sx={{
+                '&:hover': { color: '#1DA1F2'}
+                }}>
                 <TwitterIcon />
-              </Link>
-              <Link href="#" color="inherit">
+                </Link>
+              <Link href="#" color="inherit" sx={{
+                '&:hover': { color: '#FFA001' }
+              }}>
                 <GitHubIcon />
               </Link>
-              <Link href="#" color="inherit">
+              <Link href="#" color="inherit" sx={{
+                '&:hover': { color: '#0088cc' }
+              }}>
                 <TelegramIcon />
               </Link>
             </Box>
