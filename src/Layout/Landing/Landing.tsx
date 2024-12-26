@@ -8,7 +8,7 @@ import {
   Stack,
   Divider,
 } from "@mui/material";
-import { ArrowForward, Add, BorderColorOutlined } from "@mui/icons-material";
+import { ArrowForward, Add } from "@mui/icons-material";
 
 interface StatItemProps {
   number: string;
