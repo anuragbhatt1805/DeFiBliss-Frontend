@@ -114,7 +114,7 @@ const ChooseDefiBliss = () => {
   ];
 
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth="lg">
       <Stack
         spacing={4}
         sx={{

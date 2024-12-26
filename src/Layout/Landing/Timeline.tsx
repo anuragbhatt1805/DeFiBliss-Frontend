@@ -76,7 +76,8 @@ export default function Timeline() {
         minHeight: "100vh",
         // bgcolor: "background.default",
         color: "text.primary",
-        py: 8,
+        pt: 8,
+        pb:4
       }}
     >
       <Stack spacing={2} alignItems="center" textAlign="center" sx={{

@@ -2,10 +2,7 @@ import {
   Box,
   Typography,
   Container,
-  useTheme,
-  useMediaQuery,
   Stack,
-  Divider,
 } from "@mui/material";
 
 interface StatItemProps {
@@ -52,8 +49,6 @@ const Stats = () => {
   {
     /* Stats Section */
   }
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
     <Container maxWidth="lg">
@@ -70,36 +65,6 @@ const Stats = () => {
         <StatItem number="100K+" label="Users" />
         <StatItem number="50K+" label="Downloads" />
       </Stack>
-      {!isMobile ? (
-        <>
-          <Divider />
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              textAlign: "center",
-              pt: { xs: 2, md: 2 },
-              pb: { xs: 2, md: 4 },
-            }}
-          >
-            <Typography
-              variant="subtitle1"
-              sx={{
-                color: "grey.400",
-                mb: 4,
-                maxWidth: "sm",
-                fontStyle: "oblique",
-                fontWeight: "semibold",
-              }}
-            >
-              Trusted by artists worldwide
-            </Typography>
-          </Box>
-        </>
-      ) : (
-        <Divider />
-      )}
     </Container>
   );
 };
