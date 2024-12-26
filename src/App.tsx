@@ -1,5 +1,6 @@
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material"
 import { Landing } from "./Layout/Landing/Landing"
+import Footer from "./Components/Footer"
 
 const darkTheme = createTheme({
   palette: {
@@ -19,6 +20,7 @@ function App() {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <Landing />
+      <Footer />
     </ThemeProvider>
     </>
   )
