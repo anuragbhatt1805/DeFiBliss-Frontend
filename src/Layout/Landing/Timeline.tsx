@@ -73,7 +73,6 @@ export default function Timeline() {
       ref={timelineRef}
       sx={{
         width: "100%",
-        minHeight: "100vh",
         // bgcolor: "background.default",
         color: "text.primary",
         pt: 8,
