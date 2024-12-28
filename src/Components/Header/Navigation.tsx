@@ -104,14 +104,18 @@ export default function Navigation() {
       </Box>
       <List>
         {navigationItems.map((item) => (
-          <NavLink to={item.url} key={item.text} style={({ isActive }) => ({
-            backgroundColor: isActive ? "#4169E1" : "transparent",
-            borderRadius: "8px",
-            color: "white",
-            display: "flex",
-            alignItems: "center",
-            textDecoration: "none",
-            })}>
+          <NavLink
+            to={item.url}
+            key={item.text}
+            style={({ isActive }) => ({
+              backgroundColor: isActive ? "#4169E1" : "transparent",
+              borderRadius: "8px",
+              color: "white",
+              display: "flex",
+              alignItems: "center",
+              textDecoration: "none",
+            })}
+          >
             <ListItem component="li" key={item.text}>
               <ListItemIcon sx={{ color: "white" }}>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} sx={{ color: "white" }} />
@@ -130,6 +134,31 @@ export default function Navigation() {
               secondary={user.walletAddress}
               sx={{ color: "white" }}
             />
+          </ListItem>
+          <ListItem
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              w: "fit-content",
+              ml: "10%",
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                color: "#DD0000",
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "end",
+                alignItems: "center",
+                w: "100%",
+                gap: 1,
+              }}
+            >
+              <Logout fontSize="small" />
+              <Button color="inherit" onClick={handleLogout}>
+                Login
+              </Button>
+            </ListItemIcon>
           </ListItem>
         </Box>
       ) : (
@@ -194,23 +223,27 @@ export default function Navigation() {
                     to={item.url}
                     key={item.text}
                     style={({ isActive }) => ({
-                    backgroundColor: isActive ? "#4169E1" : "transparent",
-                    borderRadius: "8px",
-                    color: "white",
+                      backgroundColor: isActive ? "#4169E1" : "transparent",
+                      borderRadius: "8px",
+                      color: "white",
                     })}
                   >
-                    <Button key={item.text} color="inherit" startIcon={item.icon} sx={{
-                      borderRadius: "8px",
-                      px: 2,
-                      color: "white",
-                      "&:hover": {
-                        backgroundColor: "rgba(255, 255, 255, 0.1)",
-                      }
-                    }}>
-                    {item.text}
+                    <Button
+                      key={item.text}
+                      color="inherit"
+                      startIcon={item.icon}
+                      sx={{
+                        borderRadius: "8px",
+                        px: 2,
+                        color: "white",
+                        "&:hover": {
+                          backgroundColor: "rgba(255, 255, 255, 0.1)",
+                        },
+                      }}
+                    >
+                      {item.text}
                     </Button>
                   </NavLink>
-
                 ))}
               </Box>
             </>
@@ -237,7 +270,7 @@ export default function Navigation() {
                 color="inherit"
                 sx={{
                   borderRadius: "10px",
-                  py: 1,
+                  py: 0,
                   "&:hover": {
                     background: "rgba(255, 255, 255, 0.1)",
                   },
@@ -246,7 +279,7 @@ export default function Navigation() {
                 <Box>
                   <ListItem
                     sx={{
-                      py: 0,
+                      p: 0,
                       my: 0,
                     }}
                   >
