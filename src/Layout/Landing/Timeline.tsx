@@ -237,6 +237,7 @@ export default function Timeline() {
               background: "linear-gradient(90deg, #1a9090 0%, #3557c4 100%)",
             },
           }}
+          href="/explore"
         >
           Get Started Now
         </Button>

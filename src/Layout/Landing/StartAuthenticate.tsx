@@ -115,8 +115,9 @@ const StartAuthenticate = () => {
                 backgroundColor: "rgba(255, 255, 255, 0.05)",
               },
             }}
+            href="/explore"
           >
-            Learn More
+            Explore More
           </Button>
         </Stack>
       </Stack>
