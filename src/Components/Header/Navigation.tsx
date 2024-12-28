@@ -27,7 +27,7 @@ import {
 } from "@mui/icons-material";
 import { NavLink, useNavigate } from "react-router";
 import { useSignals } from "@preact/signals-react/runtime";
-import { accountToken } from "../../Utils/baseStore";
+import { accountToken, proofs } from "../../Utils/baseStore";
 import Logo from "/src/assets/logo.webp";
 
 interface User {
@@ -42,11 +42,8 @@ export default function Navigation() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [user, setUser] = useState<User>({
-    username: "ABCXYZ",
-    walletAddress: `${accountToken.value?.slice(
-      0,
-      6
-    )}...${accountToken.value?.slice(-4)}`,
+    username: "",
+    walletAddress: ``,
     isLoggedIn: false,
   });
 
@@ -66,7 +63,14 @@ export default function Navigation() {
   };
 
   const handleLogin = () => {
-    setUser({ ...user, isLoggedIn: true });
+    setUser({
+      username: proofs?.value?.username || "Anonymous",
+      walletAddress: `${accountToken.value?.slice(
+        0,
+        6
+      )}...${accountToken.value?.slice(-4)}`,
+      isLoggedIn: proofs?.value?.loggedIn || true,
+    });
     navigate(`/reclaim?redirect=${window.location.pathname}`);
   };
 

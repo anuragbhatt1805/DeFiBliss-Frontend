@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import { Reclaim } from "../Components/Auth/ReclaimButton";
 import { useNavigate, useSearchParams } from "react-router";
-import { ConnectButton } from "../Components/Auth/ConnectButton";
+// import { ConnectButton } from "../Components/Auth/ConnectButton";
 import { useSignals } from "@preact/signals-react/runtime";
 import { accountToken, proofs } from "../Utils/baseStore";
 import Logo from "/src/assets/logo.webp"
@@ -21,6 +21,8 @@ export const Authentication: React.FC = () => {
 
   const handleRedirect = () => {
     const url = query.get("redirect");
+    console.log(proofs.value);
+    console.log(accountToken.value);
     navigate(url || '/');
   }
 
@@ -82,8 +84,8 @@ export const Authentication: React.FC = () => {
       {/* Spacer to push button to bottom */}
       <Box sx={{ flexGrow: 1 }} />
 
-      {/* Centered Button */}
-      <ConnectButton disabled={!!proofs.value && proofs.value.length > 0}/>
+      {/* Centered Button
+      <ConnectButton disabled={!!proofs.value && proofs.value.length > 0}/> */}
     </Box>
   );
 };

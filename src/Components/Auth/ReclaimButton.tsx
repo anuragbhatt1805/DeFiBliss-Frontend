@@ -4,6 +4,7 @@ import { Proof, ReclaimProofRequest } from "@reclaimprotocol/js-sdk";
 import { Box, CircularProgress, Paper, Tab, Tabs, useMediaQuery, useTheme } from "@mui/material";
 import { useSignals } from "@preact/signals-react/runtime";
 import { proofs } from "../../Utils/baseStore";
+import { ConnectButton } from "./ConnectButton";
 
 export function Reclaim() {
   useSignals();
@@ -31,10 +32,20 @@ export function Reclaim() {
       setRequestUrl(url);
 
       await reclaimProofRequest.startSession({
-        onSuccess: (proofs) => {
-          console.log("Verification success", proofs);
-          if (proofs)
-            setProofs(proofs);
+        onSuccess: (proof) => {
+          console.log("Verification success", proof);
+          if (proof) {
+            if (typeof proof !== 'string' && proof?.claimData?.context) {
+              const data = JSON.parse(proof.claimData.context);
+              proofs.value = {
+                signature: proof?.signatures[0],
+                provider: selectedTab === 0 ? 'GitHub' : 'Twitter',
+                username: data?.extractedParameters?.username,
+                loggedIn: true
+              }
+              setProofs(proof);
+            }
+          }
         },
         onError: (error) => {
           console.error("Verification failed", error);
@@ -52,7 +63,7 @@ export function Reclaim() {
       github: GITHUB_ID
     };
 
-    setProviderId(selectedTab === 0 ? urls.twitter : urls.github);
+    setProviderId(selectedTab === 0 ? urls.github : urls.twitter);
   }, [selectedTab]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -61,13 +72,6 @@ export function Reclaim() {
     setRequestUrl("");
 
   };
-
-  useEffect(() => {
-    if (proof && typeof(proof) === 'string' && proof.length > 0) {
-      console.log(proofs);
-      proofs.value = JSON.stringify(proof);
-    }
-  }, [proof]);
 
 
   return (
@@ -99,7 +103,7 @@ export function Reclaim() {
           }}
         >
           <Tab
-            label="Twitter"
+            label="GitHub"
             sx={{
               textTransform: 'none',
               fontSize: '1rem',
@@ -107,7 +111,7 @@ export function Reclaim() {
             }}
           />
           <Tab
-            label="Github"
+            label="Twitter"
             sx={{
               textTransform: 'none',
               fontSize: '1rem',
@@ -157,26 +161,26 @@ export function Reclaim() {
           </Box>
         )}
 
-        <Box
-          sx={{
-            mt: 3,
-            width: '100%',
-            height: '48px',
-            background: `${selectedTab === 0 ? 'linear-gradient(135deg, #20B2AA 0%, #4169E1 100%)' : 'linear-gradient(135deg, #4169E1 0%, #20B2AA 100%)'}`,
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white',
-            fontSize: '1rem',
-            fontWeight: 700,
-            '&:hover': {
-              opacity: 0.9,
-            },
-          }}
-        >
-          {selectedTab === 0 ? 'Connect via Twitter' : 'Connect via Github'}
-        </Box>
+        {
+          proof && (
+            <ConnectButton sx={{
+              mt: 3,
+              width: '100%',
+              height: '48px',
+              background: `${selectedTab === 0 ? 'linear-gradient(135deg, #20B2AA 0%, #4169E1 100%)' : 'linear-gradient(135deg, #4169E1 0%, #20B2AA 100%)'}`,
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'white',
+              fontSize: '1rem',
+              fontWeight: 700,
+              '&:hover': {
+                opacity: 0.9,
+              },
+            }} />
+          )
+        }
       </Box>
     </Paper>
     </>
