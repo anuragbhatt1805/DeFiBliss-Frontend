@@ -70,9 +70,9 @@ const Feature: React.FC<FeatureProps> = ({ icon, title, description }) => (
   </FeatureCard>
 );
 
-const ChooseDefiBliss = () => {
+const ChooseVeriCraft = () => {
   {
-    /* Why Choose DeFiBliss */
+    /* Why Choose VeriCraft */
   }
   const features = [
     {
@@ -137,7 +137,7 @@ const ChooseDefiBliss = () => {
               mb: 2,
             }}
           >
-            Why Choose DefiBliss?
+            Why Choose VeriCraft?
           </Typography>
           <Typography
             variant="h6"
@@ -211,4 +211,4 @@ const ChooseDefiBliss = () => {
   );
 };
 
-export default ChooseDefiBliss;
+export default ChooseVeriCraft;

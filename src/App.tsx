@@ -2,6 +2,7 @@ import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 import { Landing } from "./Layout/Landing/Landing";
 import { BrowserRouter, Routes, Route } from "react-router";
 import Explore from "./Layout/Explore";
+import { Authentication } from "./Layout/Authentication";
 
 const darkTheme = createTheme({
   palette: {
@@ -23,10 +24,7 @@ function App() {
           <CssBaseline />
           <Routes>
             <Route index element={<Landing />} />
-            {/* <Route element={<ReclaimProtocol />}>
-              <Route path="auth" element={<Authentication />} />
-              <Route path="connect" element={<Connection />} />
-            </Route> */}
+            <Route path="reclaim" element={<Authentication />} />
             <Route path="explore" element={<Explore />} />
             {/* <Route path="artist">
               <Route index element={<Artist />} />

@@ -3,6 +3,7 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import { useState } from 'react';
+import Logo from "/src/assets/logo.webp"
 
 export default function Footer() {
 
@@ -22,17 +23,16 @@ export default function Footer() {
           {/* Logo and Description Column */}
           <Stack flex={1} spacing={2}>
             <Box display="flex" alignItems="center" gap={2} mb={2}>
-              <Box
-                sx={{
-                  width: isMobile ? 30: 50,
-                  height: isMobile ? 30: 50,
-                  borderRadius: 3,
-                  background: "linear-gradient(135deg, #20B2AA 0%, #4169E1 100%)",
-                  boxShadow: "0 4px 12px rgba(32, 178, 170, 0.25)",
-                }}
-              />
+            <img
+            src={Logo}
+            style={{
+              width: isMobile ? 30: 50,
+              height: isMobile ? 30 : 50,
+              borderRadius: 10,
+            }}
+          />
               <Typography variant="h6" component="span">
-                DefiBliss
+                VeriCraft
               </Typography>
             </Box>
             <Typography variant="body2" sx={{ mb: 3, color: 'rgba(255,255,255,0.7)' }}>
@@ -149,7 +149,7 @@ export default function Footer() {
           }}
         >
           <Typography variant="body2" color="rgba(255,255,255,0.7)">
-            © 2024 DefiBliss. All rights reserved.
+            © 2024 VeriCraft. All rights reserved.
           </Typography>
           <Select
             value={language}

@@ -6,7 +6,7 @@ import {
 } from "@mui/material";
 import Hero from "./Hero";
 import Stats from "./Stats";
-import ChooseDefiBliss from "./ChooseDefiBliss";
+import ChooseVeriCraft from "./ChooseVeriCraft";
 import Timeline from "./Timeline";
 import CommunityFeedback from "./CommunityFeedback";
 import StartAuthenticate from "./StartAuthenticate";
@@ -44,7 +44,7 @@ export function Landing() {
             }}
           />
         </Container>
-        <ChooseDefiBliss />
+        <ChooseVeriCraft />
         <Timeline />
       </Box>
       <Box

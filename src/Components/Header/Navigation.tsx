@@ -25,7 +25,10 @@ import {
   Person,
   Logout,
 } from "@mui/icons-material";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
+import { useSignals } from "@preact/signals-react/runtime";
+import { accountToken } from "../../Utils/baseStore";
+import Logo from "/src/assets/logo.webp";
 
 interface User {
   username: string;
@@ -34,11 +37,16 @@ interface User {
 }
 
 export default function Navigation() {
+  useSignals();
+  const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [user, setUser] = useState<User>({
     username: "ABCXYZ",
-    walletAddress: "0x232.......22",
+    walletAddress: `${accountToken.value?.slice(
+      0,
+      6
+    )}...${accountToken.value?.slice(-4)}`,
     isLoggedIn: false,
   });
 
@@ -59,6 +67,7 @@ export default function Navigation() {
 
   const handleLogin = () => {
     setUser({ ...user, isLoggedIn: true });
+    navigate(`/reclaim?redirect=${window.location.pathname}`);
   };
 
   const handleLogout = () => {
@@ -83,13 +92,12 @@ export default function Navigation() {
           p: 2,
         }}
       >
-        <Box
-          sx={{
-            width: 50,
-            height: 50,
-            borderRadius: 3,
-            background: "linear-gradient(135deg, #20B2AA 0%, #4169E1 100%)",
-            boxShadow: "0 4px 12px rgba(32, 178, 170, 0.25)",
+        <img
+          src={Logo}
+          style={{
+            width: isMobile ? 30 : 50,
+            height: isMobile ? 30 : 50,
+            borderRadius: 10,
           }}
         />
         <Typography
@@ -99,7 +107,7 @@ export default function Navigation() {
             color: "white",
           }}
         >
-          DefiBliss
+          VeriCraft
         </Typography>
       </Box>
       <List>
@@ -177,17 +185,16 @@ export default function Navigation() {
         <Toolbar>
           {isMobile ? (
             <>
-              <Box
-                sx={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 2,
-                  background:
-                    "linear-gradient(135deg, #20B2AA 0%, #4169E1 100%)",
+              <img
+                src={Logo}
+                style={{
+                  width: isMobile ? 30 : 50,
+                  height: isMobile ? 30 : 50,
+                  borderRadius: 10,
                 }}
               />
               <Typography variant="h6" sx={{ flexGrow: 1, ml: 2 }}>
-                DefiBliss
+                VeriCraft
               </Typography>
             </>
           ) : (
@@ -199,16 +206,15 @@ export default function Navigation() {
                   gap: 2,
                 }}
               >
-                <Box
-                  sx={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 2,
-                    background:
-                      "linear-gradient(135deg, #20B2AA 0%, #4169E1 100%)",
+                <img
+                  src={Logo}
+                  style={{
+                    width: isMobile ? 30 : 50,
+                    height: isMobile ? 30 : 50,
+                    borderRadius: 10,
                   }}
                 />
-                <Typography variant="h6">DefiBliss</Typography>
+                <Typography variant="h6">VeriCraft</Typography>
               </Box>
               <Box
                 sx={{

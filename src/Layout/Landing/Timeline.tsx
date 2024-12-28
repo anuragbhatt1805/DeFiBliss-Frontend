@@ -97,7 +97,7 @@ export default function Timeline() {
               mb: 2,
             }}
           >
-            How DefiBliss Works?
+            How VeriCraft Works?
           </Typography>
           <Typography
             variant="h6"

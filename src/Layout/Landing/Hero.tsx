@@ -7,6 +7,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { ArrowForward, Add } from "@mui/icons-material";
+import Logo from "/src/assets/logo.webp"
 
 const Hero = () => {
   {
@@ -36,13 +37,12 @@ const Hero = () => {
             mb: 6,
           }}
         >
-          <Box
-            sx={{
+          <img
+            src={Logo}
+            style={{
               width: 50,
               height: 50,
-              borderRadius: 3,
-              background: "linear-gradient(135deg, #20B2AA 0%, #4169E1 100%)",
-              boxShadow: "0 4px 12px rgba(32, 178, 170, 0.25)",
+              borderRadius: 10,
             }}
           />
           <Typography
@@ -52,7 +52,7 @@ const Hero = () => {
               color: "white",
             }}
           >
-            DefiBliss
+            VeriCraft
           </Typography>
         </Box>
 

@@ -28,7 +28,7 @@ const testimonials: Testimonial[] = [
     role: 'Digital Artist',
     avatar: 'https://i.pravatar.cc/150?img=1',
     rating: 5,
-    quote: 'DefiBliss has revolutionized how I share my artwork. The AI verification gives my collectors confidence in the authenticity of my pieces.'
+    quote: 'VeriCraft has revolutionized how I share my artwork. The AI verification gives my collectors confidence in the authenticity of my pieces.'
   },
   {
     id: '2',
@@ -121,7 +121,7 @@ export default function CommunityFeedback() {
               fontSize: { xs: '1.25rem', md: '1.5rem' }
             }}
           >
-            Hear from artists and collectors who are part of the DefiBliss ecosystem
+            Hear from artists and collectors who are part of the VeriCraft ecosystem
           </Typography>
         </Box>
 

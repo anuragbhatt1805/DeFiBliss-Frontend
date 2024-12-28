@@ -1,7 +1,8 @@
-import { Box, Button, Container, Stack, Typography } from "@mui/material";
+import { Button, Container, Stack, Typography } from "@mui/material";
 import Stats from "./Stats";
 import { ArrowForward } from "@mui/icons-material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import Logo from "/src/assets/logo.webp"
 
 const StartAuthenticate = () => {
   return (
@@ -32,15 +33,12 @@ const StartAuthenticate = () => {
           }}
           gap={1}
         >
-          <Box
-            sx={{
+          <img
+            src={Logo}
+            style={{
               width: 50,
               height: 50,
-              borderRadius: 3,
-              background: "linear-gradient(135deg, #20B2AA 0%, #4169E1 100%)",
-              boxShadow: "0 4px 12px rgba(32, 178, 170, 0.25)",
-              mb: 2,
-              px : {xs: 2, md:4}
+              borderRadius: 10,
             }}
           />
 
