@@ -83,8 +83,8 @@ export default function Profile() {
       console.log('Profile data:', data);
       setProfileData({
         ...profileData,
-        displayName: data?.data?.name,
-        bio: data?.data?.bio
+        displayName: data?.data?._doc?.name,
+        bio: data?.data?._doc?.bio
       });
     });
 

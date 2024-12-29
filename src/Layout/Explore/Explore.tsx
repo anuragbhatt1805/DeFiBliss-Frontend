@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -13,11 +13,13 @@ import {
   Box,
   Tabs,
   Tab,
-  Chip,
   styled,
   Stack,
 } from "@mui/material";
 import { Search as SearchIcon } from "@mui/icons-material";
+import { BaseURL } from "../../constant";
+import { getDownloadProof } from "../../Utils/image.utils";
+import { accountToken } from "../../Utils/baseStore";
 
 // Styled components
 const StyledTab = styled(Tab)({
@@ -27,20 +29,16 @@ const StyledTab = styled(Tab)({
   },
 });
 
-const VerifiedChip = styled(Chip)({
-  backgroundColor: "#00b894",
-  color: "#fff",
-  height: "24px",
-});
-
 interface Artwork {
   id: number;
   title: string;
-  artist: string;
+  artist: {
+    username: string;
+    walletAddress: string;
+  };
   image: string;
-  isVerified: boolean;
   description: string;
-  created: string;
+  createdAt: string;
   price: number;
   category: string;
   downloads: number;
@@ -49,96 +47,80 @@ interface Artwork {
 export default function Explore() {
   const [tabValue, setTabValue] = useState(0);
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [artworks, setArtworks] = useState<Artwork[]>([]);
 
-  // Mock data
-  const artworks: Artwork[] = [
-    {
-      id: 1,
-      title: "Cosmic Dreamscape",
-      artist: "@stellarArtist",
-      image: "https://placehold.co/800x800",
-      isVerified: true,
-      description:
-        "A mesmerizing digital artwork that explores the intersection of cosmic elements and human consciousness. Created using traditional digital painting techniques, this piece represents the boundless possibilities of human imagination.",
-      created: "March 15, 2024",
-      price: 25,
-      category: "Digital Art",
-      downloads: 1234,
-    },
-    {
-      id: 2,
-      title: "Cosmic Dreamscape",
-      artist: "@stellarArtist",
-      image: "https://placehold.co/500x600",
-      isVerified: true,
-      description:
-        "A mesmerizing digital artwork that explores the intersection of cosmic elements and human consciousness. Created using traditional digital painting techniques, this piece represents the boundless possibilities of human imagination.",
-      created: "March 15, 2024",
-      price: 25,
-      category: "Digital Art",
-      downloads: 1234,
-    },
-    {
-      id: 3,
-      title: "Cosmic Dreamscape",
-      artist: "@stellarArtist",
-      image: "https://placehold.co/700x1000",
-      isVerified: true,
-      description:
-        "A mesmerizing digital artwork that explores the intersection of cosmic elements and human consciousness. Created using traditional digital painting techniques, this piece represents the boundless possibilities of human imagination.",
-      created: "March 15, 2024",
-      price: 25,
-      category: "Digital Art",
-      downloads: 1234,
-    },
-    {
-      id: 4,
-      title: "Cosmic Dreamscape",
-      artist: "@stellarArtist",
-      image: "https://placehold.co/400x400",
-      isVerified: true,
-      description:
-        "A mesmerizing digital artwork that explores the intersection of cosmic elements and human consciousness. Created using traditional digital painting techniques, this piece represents the boundless possibilities of human imagination.",
-      created: "March 15, 2024",
-      price: 25,
-      category: "Digital Art",
-      downloads: 1234,
-    },
-    {
-      id: 5,
-      title: "Cosmic Dreamscape",
-      artist: "@stellarArtist",
-      image: "https://placehold.co/1600x1600",
-      isVerified: true,
-      description:
-        "A mesmerizing digital artwork that explores the intersection of cosmic elements and human consciousness. Created using traditional digital painting techniques, this piece represents the boundless possibilities of human imagination.",
-      created: "March 15, 2024",
-      price: 25,
-      category: "Digital Art",
-      downloads: 1234,
-    },
-    {
-      id: 6,
-      title: "Cosmic Dreamscape",
-      artist: "@stellarArtist",
-      image: "https://placehold.co/600x600",
-      isVerified: true,
-      description:
-        "A mesmerizing digital artwork that explores the intersection of cosmic elements and human consciousness. Created using traditional digital painting techniques, this piece represents the boundless possibilities of human imagination.",
-      created: "March 15, 2024",
-      price: 25,
-      category: "Digital Art",
-      downloads: 1234,
-    },
-    // Add more artwork items as needed
-  ];
+  useEffect(() => {
+    fetch(`${BaseURL}/arts/explore`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        const artwork: Artwork[] = [];
+        for (const art of data.data) {
+          artwork.push({
+            id: art?._id,
+            title: art?.title,
+            artist: {
+              username: art?.artist?.username,
+              walletAddress: art?.artist?.walletAddress,
+            },
+            image: art?.file,
+            description: art?.description,
+            createdAt: art?.createdAt,
+            price: art?.price,
+            category: art?.category?.name,
+            downloads: art?.downloads,
+          });
+        }
+        setArtworks(artwork);
+      });
+  }, []);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     console.log(event);
     setTabValue(newValue);
   };
 
-  const handleDownload = (id: number) => {
+  const handleDownloadNow = async (id: number) => {
+    const { success, transactionId } = await getDownloadProof({
+      userAddress: accountToken.value || "",
+      artistsAddress:
+        artworks.find((art) => art.id === id)?.artist.walletAddress || "",
+    });
+
+    if (success) {
+      console.log(`Downloaded artwork with transactionId: ${transactionId}`);
+    }
+
+    if (success) {
+      // const formData1 = new FormData();
+      // // formData1.append('transactionId', transactionId);
+      // formData1.append('walletAddress', accountToken.value || "");
+      await fetch(`${BaseURL}/arts/download/${id}`, {
+        method: "POST",
+        body: JSON.stringify({
+          walletAddress: accountToken.value || "",
+        }),
+      }).then(async (response) => {
+        if (response.ok) {
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `${id}.jpg`; // You can customize the file name here
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+        } else {
+          console.error("Failed to download the artwork");
+        }
+      });
+    }
+
+    setExpandedId(expandedId === id ? null : id);
+  };
+
+  const handleDownload = async (id: number) => {
     setExpandedId(expandedId === id ? null : id);
   };
 
@@ -179,7 +161,7 @@ export default function Explore() {
                 <CardMedia
                   component="img"
                   height="300"
-                  image={artwork.image}
+                  image={`${BaseURL}/${artwork.image.slice(4)}`}
                   alt={artwork.title}
                 />
                 <CardContent>
@@ -198,19 +180,12 @@ export default function Explore() {
                       onClick={() => handleDownload(artwork.id)}
                       sx={{ bgcolor: "#00b894" }}
                     >
-                      {expandedId === artwork.id ? "Cancel" : "Download" }
+                      {expandedId === artwork.id ? "Cancel" : "Download"}
                     </Button>
                   </Box>
                   <Typography variant="body2" color="gray">
-                    by {artwork.artist}
+                    by {artwork.artist?.username}
                   </Typography>
-                  {artwork.isVerified && (
-                    <VerifiedChip
-                      label="Verified Original"
-                      size="small"
-                      sx={{ mt: 1 }}
-                    />
-                  )}
                 </CardContent>
 
                 {expandedId === artwork.id && (
@@ -224,10 +199,10 @@ export default function Explore() {
                     <Grid container spacing={2}>
                       <Grid item xs={6}>
                         <Typography variant="caption" color="gray">
-                          Created
+                          createdAt
                         </Typography>
                         <Typography variant="body2">
-                          {artwork.created}
+                          {new Date(artwork.createdAt).toLocaleDateString()}
                         </Typography>
                       </Grid>
                       <Grid item xs={6}>
@@ -259,8 +234,9 @@ export default function Explore() {
                       <Button
                         variant="contained"
                         size="small"
-                        onClick={() => handleDownload(artwork.id)}
+                        onClick={() => handleDownloadNow(artwork.id)}
                         sx={{ bgcolor: "#00b894" }}
+                        disabled={!accountToken.value}
                       >
                         Download Now
                       </Button>

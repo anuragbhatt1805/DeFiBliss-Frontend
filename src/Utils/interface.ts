@@ -15,3 +15,13 @@ export interface TransactionRequest {
 export interface Transaction {
     transactionId: string;
 }
+
+export interface DownloadedTransaction {
+    userAddress: string;
+    artistsAddress: string
+}
+
+export interface DownloadResult {
+    success: boolean;
+    transactionId: string;
+}

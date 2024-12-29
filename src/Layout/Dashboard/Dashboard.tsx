@@ -105,7 +105,8 @@ export default function Dashboard() {
   const stats = [
     { title: 'Total Uploads', value: '247', subtitle: '+12 this week' },
     { title: 'Total Downloads', value: '1,834', subtitle: '+89 this week' },
-    { title: 'Verification Rate', value: '98.2%', subtitle: 'Last 30 days' }
+    { title: 'Total Earnings', value: '$ 25', subtitle: 'Total Earnings'},
+    { title: 'Verification Rate', value: '98.2%', subtitle: 'Last 30 days' },
   ];
 
   const dashboardCards = [
@@ -149,7 +150,7 @@ export default function Dashboard() {
         </Grid>
         {/* Stats Section */}
         {stats.map((stat, index) => (
-          <Grid item xs={12} md={4} key={index}>
+          <Grid item xs={12} md={3} key={index}>
             <StatCard {...stat} />
           </Grid>
         ))}

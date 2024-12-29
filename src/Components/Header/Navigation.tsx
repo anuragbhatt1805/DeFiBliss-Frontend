@@ -272,7 +272,7 @@ export default function Navigation() {
             >
               <MenuIcon />
             </IconButton>
-          ) : user.isLoggedIn ? (
+          ) : proofs.value?.loggedIn ? (
             <div>
               <IconButton
                 size="small"

@@ -179,6 +179,7 @@ const UploadForm: React.FC = () => {
     formData.append("description", imageDetails.description);
     formData.append("category", imageDetails.category);
     formData.append("transactionId", transactionId);
+    formData.append("price", `${imageDetails.price}`);
     formData.append("verification_rate", `${uploadState.aiScore * 100}`);
     formData.append("walletAddress", accountToken.value || "");
     formData.append("signature", proofs.value?.signature || "");
