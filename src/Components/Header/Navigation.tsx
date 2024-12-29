@@ -120,7 +120,7 @@ export default function Navigation() {
             to={item.url}
             key={item.text}
             style={({ isActive }) => ({
-              backgroundColor: isActive ? "#4169E1" : "transparent",
+              backgroundColor: isActive ? "#00b894" : "transparent",
               borderRadius: "8px",
               color: "white",
               display: "flex",
@@ -167,7 +167,11 @@ export default function Navigation() {
               }}
             >
               <Logout fontSize="small" />
-              <Button color="inherit" onClick={handleLogout}>
+              <Button color="inherit" onClick={handleLogout} sx={{
+              "&:hover": {
+                background: "#00b894",
+              },
+            }}>
                 Login
               </Button>
             </ListItemIcon>
@@ -233,7 +237,7 @@ export default function Navigation() {
                     to={item.url}
                     key={item.text}
                     style={({ isActive }) => ({
-                      backgroundColor: isActive ? "#4169E1" : "transparent",
+                      backgroundColor: isActive ? "#00b894" : "transparent",
                       borderRadius: "8px",
                       color: "white",
                     })}
@@ -328,7 +332,12 @@ export default function Navigation() {
               </Menu>
             </div>
           ) : (
-            <Button color="inherit" onClick={handleLogin}>
+            <Button color="inherit" onClick={handleLogin}
+            sx={{
+              "&:hover": {
+                background: "#00b894",
+              },
+            }}>
               Login
             </Button>
           )}

@@ -40,13 +40,13 @@ const ACCEPTED_FILE_TYPES = {
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 
 const DropzoneArea = styled(Box)(({ theme }) => ({
-  border: `2px dashed ${theme.palette.divider}`,
+  border: `2px dashed white`,
   borderRadius: 20,
   padding: theme.spacing(6),
   textAlign: "center",
   cursor: "pointer",
   "&:hover": {
-    borderColor: theme.palette.primary.main,
+    borderColor: "#00b894",
   },
 }));
 
@@ -193,7 +193,7 @@ const UploadForm: React.FC = () => {
             <Typography variant="body2" color="textSecondary" gutterBottom>
               or
             </Typography>
-            <Button variant="contained" component="span">
+            <Button variant="contained" component="span" sx={{bgcolor: "#00b894"}}>
               Browse Files
             </Button>
             <Typography variant="caption" display="block" sx={{ mt: 2 }}>
@@ -211,7 +211,9 @@ const UploadForm: React.FC = () => {
             <LinearProgress
               variant="determinate"
               value={uploadState.uploadProgress}
-            />
+              sx={{
+                bgcolor: "#00b894"
+              }}/>
           </Box>
         )}
       </Paper>
