@@ -17,6 +17,12 @@ interface StatCardProps {
   color?: string;
 }
 
+interface DashboardCardProps {
+  title: string;
+  value: string;
+  description: string;
+}
+
 interface UploadCardProps {
   title: string;
   uploadDate: string;
@@ -26,7 +32,7 @@ interface UploadCardProps {
 }
 
 const StatCard: React.FC<StatCardProps> = ({ title, value, subtitle, color = '#14B8A6' }) => (
-  <Card sx={{ bgcolor: '#1C1C1C', color: 'white', height: '100%' }}>
+  <Card sx={{ bgcolor: '#1C1C1C', color: 'white', height: '100%', borderRadius: 2 }}>
     <CardContent>
       <Typography sx={{ color: color, mb: 1 }}>
         {title}
@@ -41,6 +47,22 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, subtitle, color = '#1
   </Card>
 );
 
+const DashboardCard: React.FC<DashboardCardProps> = ({ title, value, description }) => (
+  <Card sx={{ bgcolor: '#1C1C1C', color: 'white', height: '100%', borderRadius: 2 }}>
+    <CardContent>
+      <Typography sx={{ color: '#14B8A6', mb: 1 }}>
+        {title}
+      </Typography>
+      <Typography variant="h3" component="div" sx={{ mb: 1 }}>
+        {value}
+      </Typography>
+      <Typography variant="body2" sx={{ color: 'grey.500' }}>
+        {description}
+      </Typography>
+    </CardContent>
+  </Card>
+);
+
 const UploadCard: React.FC<UploadCardProps> = ({
   title,
   uploadDate,
@@ -48,12 +70,13 @@ const UploadCard: React.FC<UploadCardProps> = ({
   imageUrl,
   isVerified
 }) => (
-  <Card sx={{ bgcolor: '#1C1C1C', color: 'white' }}>
+  <Card sx={{ bgcolor: '#1C1C1C', color: 'white', p:2, borderRadius: 2 }}>
     <CardMedia
       component="img"
-      height="200"
+      height="300"
       image={imageUrl}
       alt={title}
+      sx={{borderRadius: 1}}
     />
     <CardContent>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
@@ -85,26 +108,33 @@ export default function Dashboard() {
     { title: 'Verification Rate', value: '98.2%', subtitle: 'Last 30 days' }
   ];
 
+  const dashboardCards = [
+    { title: 'Total Downloads', value: '34', description: 'This Month' },
+    { title: 'Saved', value: '128', description: 'Total Items' },
+    { title: 'Following', value: '56', description: 'Artist' },
+    { title: 'Followers', value: '128', description: 'Total Followers' }
+  ];
+
   const recentUploads = [
     {
       title: 'Abstract Harmony',
       uploadDate: 'Uploaded 2 days ago',
       downloads: 48,
-      imageUrl: '/placeholder.svg?height=400&width=600',
+      imageUrl: 'https://placehold.co/600x400',
       isVerified: true
     },
     {
       title: 'Digital Dreams',
       uploadDate: 'Uploaded 3 days ago',
       downloads: 36,
-      imageUrl: '/placeholder.svg?height=400&width=600',
+      imageUrl: 'https://placehold.co/600x400',
       isVerified: true
     },
     {
       title: 'Cosmic Wave',
       uploadDate: 'Uploaded 4 days ago',
       downloads: 29,
-      imageUrl: '/placeholder.svg?height=400&width=600',
+      imageUrl: 'https://placehold.co/600x400',
       isVerified: true
     }
   ];
@@ -112,6 +142,11 @@ export default function Dashboard() {
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
       <Grid container spacing={3}>
+        <Grid item xs={12} sx={{mt: 1}}>
+          <Typography variant="h4" sx={{ color: 'white' }}>
+            Statistics
+          </Typography>
+        </Grid>
         {/* Stats Section */}
         {stats.map((stat, index) => (
           <Grid item xs={12} md={4} key={index}>
@@ -119,9 +154,23 @@ export default function Dashboard() {
           </Grid>
         ))}
 
+        <Grid item xs={12} sx={{mt: 2}}>
+          <Typography variant="h4" sx={{ color: 'white' }}>
+            Dashboard
+          </Typography>
+        </Grid>
+
+        {
+          dashboardCards.map((card, index) => (
+            <Grid item xs={12} md={3} key={index}>
+              <DashboardCard {...card} />
+            </Grid>
+          ))
+        }
+
         {/* Recent Uploads Section */}
         <Grid item xs={12}>
-          <Typography variant="h5" sx={{ color: 'white', my: 3 }}>
+          <Typography variant="h5" sx={{ color: 'white', mt: 3, mb:0 }}>
             Recent Uploads
           </Typography>
         </Grid>
