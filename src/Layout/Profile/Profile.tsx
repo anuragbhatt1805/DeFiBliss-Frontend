@@ -66,8 +66,28 @@ export default function Profile() {
     }));
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    await fetch(`${BaseURL}/users/${profileData.username}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: profileData.displayName,
+        bio: profileData.bio
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Profile data:', data);
+      setProfileData({
+        ...profileData,
+        displayName: data?.data?.name,
+        bio: data?.data?.bio
+      });
+    });
+
     // Handle form submission
     console.log('Profile data:', profileData);
   };
@@ -109,21 +129,23 @@ export default function Profile() {
             Personal Information
           </Typography>
 
-          <Stack spacing={3}>
+          <Stack spacing={0}>
             <Box sx={{
               display: 'grid',
-              gap: 2,
+              // gap: 2,
               gridTemplateColumns: isMobile ? '1fr' : '1fr'
             }}>
+              <Typography variant="body1" color="text.secondary" mb={1}>Name</Typography>
               <TextField
                 fullWidth
-                label="Display Name"
+                // label="Display Name"
                 value={profileData.displayName}
                 onChange={handleChange('displayName')}
                 variant="filled"
               />
             </Box>
 
+            <Typography variant="body1" color="text.secondary" mt={3} mb={1}>Bio</Typography>
             <TextField
               fullWidth
               label="Bio"

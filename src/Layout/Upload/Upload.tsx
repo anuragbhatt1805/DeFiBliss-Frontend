@@ -79,7 +79,9 @@ const UploadForm: React.FC = () => {
     fetch(`${BaseURL}/category`)
       .then((response) => response.json())
       .then((data) => {
-        const categories = Object.values(data?.data || {}).map((category: any) => category.name);
+        const categories = Object.values(data?.data || {}).map(
+          (category: any) => category.name
+        );
         setCategory(categories);
       });
   }, []);
@@ -128,13 +130,21 @@ const UploadForm: React.FC = () => {
         uploadProgress: 100,
       }));
 
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      setUploadState((prev) => ({
-        ...prev,
-        originalityCheck: "completed",
-        original: true,
-      }));
+      const formData1 = new FormData();
+      formData1.append("image", file);
+      await fetch(`${BaseURL}/arts/checkoriginal`, {
+        method: "POST",
+        body: formData1
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          setUploadState((prev) => ({
+            ...prev,
+            originalityCheck: "completed",
+            original: data.success,
+          }));
+        });
     } catch (error) {
       setUploadState((prev) => ({
         ...prev,
@@ -169,7 +179,7 @@ const UploadForm: React.FC = () => {
     formData.append("description", imageDetails.description);
     formData.append("category", imageDetails.category);
     formData.append("transactionId", transactionId);
-    formData.append("verification_rate", `${(uploadState.aiScore)*100}`);
+    formData.append("verification_rate", `${uploadState.aiScore * 100}`);
     formData.append("walletAddress", accountToken.value || "");
     formData.append("signature", proofs.value?.signature || "");
 
@@ -311,10 +321,17 @@ const UploadForm: React.FC = () => {
               </Box>
             )}
             {uploadState.originalityCheck === "completed" && (
-              <Box sx={{ display: "flex", alignItems: "center" }}>
+              uploadState.original ? (
+                <Box sx={{ display: "flex", alignItems: "center" }}>
                 <DoneAll fontSize="large" sx={{ mr: 2, color: "green" }} />
                 <Typography>Image is Original</Typography>
               </Box>
+              ):(
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                <ErrorOutlineIcon fontSize="large" sx={{ mr: 2, color: "red" }} />
+                <Typography>Image is Tampered</Typography>
+              </Box>
+              )
             )}
             {uploadState.originalityCheck === "failed" && (
               <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -393,7 +410,6 @@ const UploadForm: React.FC = () => {
                   }))
                 }
               />
-
 
               <Typography sx={{ mb: 1, color: "#fff" }}>Price</Typography>
               <TextField
