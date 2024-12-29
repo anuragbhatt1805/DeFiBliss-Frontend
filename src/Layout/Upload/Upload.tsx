@@ -17,6 +17,9 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { DoneAll } from "@mui/icons-material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import CloseIcon from "@mui/icons-material/Close";
+import { getTransactionId } from "../../Utils/image.utils";
+import { useSignals } from "@preact/signals-react/runtime";
+import { accountToken, proofs } from "../../Utils/baseStore";
 
 interface UploadState {
   file: File | null;
@@ -51,6 +54,7 @@ const DropzoneArea = styled(Box)(({ theme }) => ({
 }));
 
 const UploadForm: React.FC = () => {
+  useSignals();
   const CATEGORIES = [
     "Digital Art",
     "Photography",
@@ -146,6 +150,15 @@ const UploadForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!uploadState.file || uploadState.aiScore === null) return;
+
+    if (accountToken.value && proofs.value) {
+      const { transactionId } = await getTransactionId({
+        walletAddress: accountToken.value,
+        signature: proofs.value.signature,
+        username: proofs.value.username,
+        timestamp: Date.now(),
+      })
+    }
 
     const formData = new FormData();
     formData.append("file", uploadState.file);
@@ -257,7 +270,7 @@ const UploadForm: React.FC = () => {
         </Paper>
       )}
 
-      {uploadState.aiVerificationStatus === "completed" && (
+      {uploadState.aiVerificationStatus === "completed" && uploadState.aiScore !== null && uploadState.aiScore < 0.5 && (
         <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
           <Typography variant="h6" gutterBottom>
             Authenticity of Image

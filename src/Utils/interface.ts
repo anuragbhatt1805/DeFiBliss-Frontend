@@ -4,3 +4,14 @@ export interface ReclaimSignature {
     username: string;
     loggedIn: boolean;
 }
+
+export interface TransactionRequest {
+    username: string;
+    signature: string;
+    walletAddress: string;
+    timestamp: number;
+}
+
+export interface Transaction {
+    transactionId: string;
+}
