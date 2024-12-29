@@ -7,9 +7,10 @@ export const getTransactionId = async ({walletAddress, signature, username, time
     }
 };
 
-export const getDownloadProof = async ({userAddress, artistsAddress} : DownloadedTransaction) : Promise<DownloadResult> => {
+export const getDownloadProof = async ({userAddress, artistsAddress, amount} : DownloadedTransaction) : Promise<DownloadResult> => {
+
     return {
         success: true,
-        transactionId: `${userAddress}-${artistsAddress}`
+        transactionId: `${userAddress}-${artistsAddress}-${amount}`
     }
 }

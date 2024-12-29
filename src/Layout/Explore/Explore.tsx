@@ -82,6 +82,7 @@ export default function Explore() {
 
   const handleDownloadNow = async (id: number) => {
     const { success, transactionId } = await getDownloadProof({
+      amount: artworks.find((art) => art.id === id)?.price || 0,
       userAddress: accountToken.value || "",
       artistsAddress:
         artworks.find((art) => art.id === id)?.artist.walletAddress || "",

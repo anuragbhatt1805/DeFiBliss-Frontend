@@ -18,7 +18,8 @@ export interface Transaction {
 
 export interface DownloadedTransaction {
     userAddress: string;
-    artistsAddress: string
+    artistsAddress: string;
+    amount: number;
 }
 
 export interface DownloadResult {

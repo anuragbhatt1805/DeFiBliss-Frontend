@@ -144,11 +144,20 @@ const UploadForm: React.FC = () => {
             originalityCheck: "completed",
             original: data.success,
           }));
+        })
+        .catch((error) => {
+          console.log(error);
+          setUploadState((prev) => ({
+            ...prev,
+            originalityCheck: "failed",
+            original: false,
+          }));
         });
     } catch (error) {
       setUploadState((prev) => ({
         ...prev,
         aiVerificationStatus: "failed",
+        originalityCheck: "failed"
       }));
     }
 
