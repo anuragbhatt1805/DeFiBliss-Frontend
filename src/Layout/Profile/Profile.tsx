@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -11,16 +11,19 @@ import {
   useTheme,
   useMediaQuery
 } from '@mui/material';
+import { BaseURL } from '../../constant';
+import { accountToken } from '../../Utils/baseStore';
+import { useSignals } from '@preact/signals-react/runtime';
 
 interface ProfileData {
   displayName: string;
   username: string;
   bio: string;
   joinedDate: string;
-  avatarUrl: string;
 }
 
 export default function Profile() {
+  useSignals();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -29,8 +32,30 @@ export default function Profile() {
     username: 'stellarArtist',
     bio: 'Digital artist specializing in cosmic and abstract themes. Creating unique pieces that blend reality with imagination.',
     joinedDate: 'March 2024',
-    avatarUrl: '/placeholder.svg'
   });
+
+  useEffect( () => {
+    // const accountToken = { value: 'sampleWalletAddress' }; // Replace with actual logic to get account token
+    fetch(`${BaseURL}/users/`, {
+      method: "POST",
+      body: JSON.stringify({
+        walletAddress: accountToken.value,
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('User data:', data);
+      setProfileData({
+        displayName: data?.data?._doc?.name,
+        username: data?.data?._doc?.username,
+        bio: data?.data?._doc?.bio,
+        joinedDate: data?.data?._doc?.createdAt
+      });
+    })
+  }, []);
 
   const handleChange = (field: keyof ProfileData) => (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -62,7 +87,7 @@ export default function Profile() {
 
         <Box sx={{ mb: 4, display: 'flex', alignItems: 'center', gap: 2 }}>
           <Avatar
-            src={profileData.avatarUrl}
+            // src={profileData.avatarUrl}
             sx={{
               width: {xs: 30, md:50},
               height: {xs: 30, md:50},
@@ -74,7 +99,7 @@ export default function Profile() {
               @{profileData.username}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Joined {profileData.joinedDate}
+              Joined {new Date(profileData.joinedDate).toLocaleDateString()}
             </Typography>
           </Box>
         </Box>

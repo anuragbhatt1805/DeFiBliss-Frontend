@@ -11,6 +11,7 @@ import { useNavigate, useSearchParams } from "react-router";
 import { useSignals } from "@preact/signals-react/runtime";
 import { accountToken, proofs } from "../Utils/baseStore";
 import Logo from "/src/assets/logo.webp"
+import { BaseURL } from "../constant";
 
 export const Authentication: React.FC = () => {
   useSignals();
@@ -19,11 +20,37 @@ export const Authentication: React.FC = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [query] = useSearchParams();
 
-  const handleRedirect = () => {
+  const handleRedirect = async () => {
     const url = query.get("redirect");
-    console.log(proofs.value);
-    console.log(accountToken.value);
-    navigate(url || '/');
+    // console.log(proofs.value);
+    // console.log(accountToken.value);
+    await fetch(`${BaseURL}/users/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: proofs.value?.username,
+        walletAddress: accountToken.value,
+        signature: proofs.value?.signature,
+        provider: proofs.value?.provider
+      })
+    }).then((response) => { return response.json() })
+      .then((data) => {
+        console.log(data);
+        if (data.success) {
+          proofs.value = {
+            username: data?.data?.username,
+            signature: data?.data?.signature,
+            provider: data?.data?.provider,
+            loggedIn: true
+          }
+          navigate(url || '/');
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
   }
 
   useEffect(() => {

@@ -15,7 +15,7 @@ export function Reclaim() {
   const [requestUrl, setRequestUrl] = useState<string>("");
   const [proof, setProofs] = useState<string | Proof | null>(null);
   const [selectedTab, setSelectedTab] = useState<number>(0);
-  const [PROVIDER_ID, setProviderId] = useState<string>(TWITTER_ID);
+  const [PROVIDER_ID, setProviderId] = useState<string>(GITHUB_ID);
 
   useEffect(() => {
     async function initializeReclaim() {

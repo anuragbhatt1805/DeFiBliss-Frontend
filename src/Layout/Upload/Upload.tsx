@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import {
   Box,
@@ -14,12 +14,14 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import InputAdornment from "@mui/material/InputAdornment";
 import { DoneAll } from "@mui/icons-material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import CloseIcon from "@mui/icons-material/Close";
 import { getTransactionId } from "../../Utils/image.utils";
 import { useSignals } from "@preact/signals-react/runtime";
 import { accountToken, proofs } from "../../Utils/baseStore";
+import { BaseURL } from "../../constant";
 
 interface UploadState {
   file: File | null;
@@ -33,7 +35,8 @@ interface UploadState {
 interface ImageDetails {
   title: string;
   description: string;
-  tags: string[];
+  category: string;
+  price: number;
 }
 
 const ACCEPTED_FILE_TYPES = {
@@ -55,16 +58,7 @@ const DropzoneArea = styled(Box)(({ theme }) => ({
 
 const UploadForm: React.FC = () => {
   useSignals();
-  const CATEGORIES = [
-    "Digital Art",
-    "Photography",
-    "Illustration",
-    "Painting",
-    "3D Art",
-    "Animation",
-    "Graphic Design",
-    "Traditional Art",
-  ];
+  const [CATEGORIES, setCategory] = useState<string[]>([]);
   const [uploadState, setUploadState] = useState<UploadState>({
     file: null,
     uploadProgress: 0,
@@ -77,8 +71,18 @@ const UploadForm: React.FC = () => {
   const [imageDetails, setImageDetails] = useState<ImageDetails>({
     title: "",
     description: "",
-    tags: [],
+    category: "",
+    price: 0,
   });
+
+  useEffect(() => {
+    fetch(`${BaseURL}/category`)
+      .then((response) => response.json())
+      .then((data) => {
+        const categories = Object.values(data?.data || {}).map((category: any) => category.name);
+        setCategory(categories);
+      });
+  }, []);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -101,19 +105,20 @@ const UploadForm: React.FC = () => {
 
     // Simulate AI verification API call
     try {
-        const formData = new FormData();
-        formData.append("media", file);
-        formData.append("models", "genai,deepfake");
-        formData.append("api_user", import.meta.env.VITE_SIGHT_IMAGE_API_USAGE);
-        formData.append("api_secret", import.meta.env.VITE_SIGHT_IMAGE_API_KEY);
-      const response = await fetch("https://api.sightengine.com/1.0/check.json",
+      const formData = new FormData();
+      formData.append("media", file);
+      formData.append("models", "genai,deepfake");
+      formData.append("api_user", import.meta.env.VITE_SIGHT_IMAGE_API_USAGE);
+      formData.append("api_secret", import.meta.env.VITE_SIGHT_IMAGE_API_KEY);
+      const response = await fetch(
+        "https://api.sightengine.com/1.0/check.json",
         {
           method: "POST",
           body: formData,
         }
       );
-        const data = await response.json();
-        console.log(data);
+      const data = await response.json();
+      console.log(data);
       const mockAiScore = data?.type?.ai_generated;
 
       setUploadState((prev) => ({
@@ -151,19 +156,35 @@ const UploadForm: React.FC = () => {
     e.preventDefault();
     if (!uploadState.file || uploadState.aiScore === null) return;
 
-    if (accountToken.value && proofs.value) {
-      const { transactionId } = await getTransactionId({
-        walletAddress: accountToken.value,
-        signature: proofs.value.signature,
-        username: proofs.value.username,
-        timestamp: Date.now(),
-      })
-    }
+    const { transactionId } = await getTransactionId({
+      walletAddress: accountToken.value || "",
+      signature: proofs.value?.signature || "",
+      username: proofs.value?.username || "",
+      timestamp: Date.now(),
+    });
 
     const formData = new FormData();
-    formData.append("file", uploadState.file);
-    formData.append("aiScore", uploadState.aiScore.toString());
-    formData.append("details", JSON.stringify(imageDetails));
+    formData.append("image", uploadState.file);
+    formData.append("title", imageDetails.title);
+    formData.append("description", imageDetails.description);
+    formData.append("category", imageDetails.category);
+    formData.append("transactionId", transactionId);
+    formData.append("verification_rate", `${(uploadState.aiScore)*100}`);
+    formData.append("walletAddress", accountToken.value || "");
+    formData.append("signature", proofs.value?.signature || "");
+
+    const response = await fetch(`${BaseURL}/arts/add`, {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      console.log("Success:", data);
+    } else {
+      console.error("Error:", data);
+    }
 
     // Submit to your API here
     console.log("Submitting:", formData);
@@ -181,7 +202,8 @@ const UploadForm: React.FC = () => {
     setImageDetails({
       title: "",
       description: "",
-      tags: [],
+      category: "",
+      price: 0,
     });
   };
 
@@ -206,7 +228,11 @@ const UploadForm: React.FC = () => {
             <Typography variant="body2" color="textSecondary" gutterBottom>
               or
             </Typography>
-            <Button variant="contained" component="span" sx={{bgcolor: "#00b894"}}>
+            <Button
+              variant="contained"
+              component="span"
+              sx={{ bgcolor: "#00b894" }}
+            >
               Browse Files
             </Button>
             <Typography variant="caption" display="block" sx={{ mt: 2 }}>
@@ -225,8 +251,9 @@ const UploadForm: React.FC = () => {
               variant="determinate"
               value={uploadState.uploadProgress}
               sx={{
-                bgcolor: "#00b894"
-              }}/>
+                bgcolor: "#00b894",
+              }}
+            />
           </Box>
         )}
       </Paper>
@@ -255,7 +282,7 @@ const UploadForm: React.FC = () => {
                 <>
                   <DoneAll fontSize="large" sx={{ mr: 2, color: "green" }} />
                   <Typography>
-                  Image is {(uploadState.aiScore || 0.02) * 100}% AI Generated
+                    Image is {(uploadState.aiScore || 0.02) * 100}% AI Generated
                   </Typography>
                 </>
               )}
@@ -270,31 +297,36 @@ const UploadForm: React.FC = () => {
         </Paper>
       )}
 
-      {uploadState.aiVerificationStatus === "completed" && uploadState.aiScore !== null && uploadState.aiScore < 0.5 && (
-        <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
-          <Typography variant="h6" gutterBottom>
-            Authenticity of Image
-          </Typography>
-          {uploadState.originalityCheck === "processing" && (
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <CircularProgress size={24} sx={{ mr: 2 }} />
-              <Typography>Checking Image Originality</Typography>
-            </Box>
-          )}
-          {uploadState.originalityCheck === "completed" && (
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <DoneAll fontSize="large" sx={{ mr: 2, color: "green" }} />
-              <Typography>Image is Original</Typography>
-            </Box>
-          )}
-          {uploadState.originalityCheck === "failed" && (
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <ErrorOutlineIcon fontSize="large" sx={{ mr: 2, color: "red" }} />
-              <Typography>Image is not Owned By Someone else</Typography>
-            </Box>
-          )}
-        </Paper>
-      )}
+      {uploadState.aiVerificationStatus === "completed" &&
+        uploadState.aiScore !== null &&
+        uploadState.aiScore < 0.5 && (
+          <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              Authenticity of Image
+            </Typography>
+            {uploadState.originalityCheck === "processing" && (
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <CircularProgress size={24} sx={{ mr: 2 }} />
+                <Typography>Checking Image Originality</Typography>
+              </Box>
+            )}
+            {uploadState.originalityCheck === "completed" && (
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <DoneAll fontSize="large" sx={{ mr: 2, color: "green" }} />
+                <Typography>Image is Original</Typography>
+              </Box>
+            )}
+            {uploadState.originalityCheck === "failed" && (
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <ErrorOutlineIcon
+                  fontSize="large"
+                  sx={{ mr: 2, color: "red" }}
+                />
+                <Typography>Image is not Owned By Someone else</Typography>
+              </Box>
+            )}
+          </Paper>
+        )}
 
       {uploadState.aiScore !== null &&
         uploadState.aiScore < 0.5 &&
@@ -362,15 +394,46 @@ const UploadForm: React.FC = () => {
                 }
               />
 
-              <Typography sx={{ mb: 1, color: "#fff" }}>Category</Typography>
-              <Select
+
+              <Typography sx={{ mb: 1, color: "#fff" }}>Price</Typography>
+              <TextField
                 fullWidth
                 variant="filled"
-                value={imageDetails.tags[0] || ""}
+                type="number"
+                sx={{
+                  mb: 3,
+                  "& .MuiFilledInput-root": {
+                    bgcolor: "rgba(45, 45, 45, 0.95)",
+                    "&:hover, &.Mui-focused": {
+                      bgcolor: "rgba(55, 55, 55, 0.95)",
+                    },
+                  },
+                }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">$</InputAdornment>
+                  ),
+                }}
+                value={imageDetails.price}
                 onChange={(e) =>
                   setImageDetails((prev) => ({
                     ...prev,
-                    tags: [e.target.value],
+                    price: parseFloat(e.target.value),
+                  }))
+                }
+              />
+
+              {/* <Typography sx={{ mb: 1, color: "#fff" }}>Category</Typography> */}
+              <Typography sx={{ mb: 1, color: "#fff" }}>Category</Typography>
+              <Select
+                fullWidth
+                name="category"
+                variant="filled"
+                value={imageDetails.category || ""}
+                onChange={(e) =>
+                  setImageDetails((prev) => ({
+                    ...prev,
+                    category: e.target.value,
                   }))
                 }
                 sx={{
@@ -412,6 +475,7 @@ const UploadForm: React.FC = () => {
                 <Button
                   type="submit"
                   variant="contained"
+                  disabled={!accountToken.value && !proofs.value}
                   sx={{
                     background:
                       "linear-gradient(90deg, #00BFA5 0%, #2979FF 100%)",
