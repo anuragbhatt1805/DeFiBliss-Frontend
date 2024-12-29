@@ -1,8 +1,12 @@
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 import { Landing } from "./Layout/Landing/Landing";
 import { BrowserRouter, Routes, Route } from "react-router";
-import Explore from "./Layout/Explore";
+import Explore from "./Layout/Explore/Explore";
 import { Authentication } from "./Layout/Authentication";
+import Layout from "./Layout/Layout";
+import Dashboard from "./Layout/Dashboard/Dashboard";
+import Profile from "./Layout/Profile/Profile";
+import Upload from "./Layout/Upload/Upload";
 
 const darkTheme = createTheme({
   palette: {
@@ -25,16 +29,12 @@ function App() {
           <Routes>
             <Route index element={<Landing />} />
             <Route path="reclaim" element={<Authentication />} />
-            <Route path="explore" element={<Explore />} />
-            {/* <Route path="artist">
-              <Route index element={<Artist />} />
-              <Route path="dashboard" element={<ArtistDashboard />} />
-              <Route path="profile" element={<ArtistProfile />} />
+            <Route element={<Layout />} >
+              <Route path="explore" element={<Explore />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="profile" element={<Profile />} />
+              <Route path="upload" element={<Upload />} />
             </Route>
-            <Route path="user">
-              <Route index element={<User />} />
-              <Route path="profile" element={<UserProfile />} />
-            </Route> */}
           </Routes>
         </ThemeProvider>
       </BrowserRouter>

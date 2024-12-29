@@ -128,7 +128,7 @@ export default function Navigation() {
               textDecoration: "none",
             })}
           >
-            <ListItem component="li" key={item.text}>
+            <ListItem component="li" key={item.text} onClick={handleDrawerToggle}>
               <ListItemIcon sx={{ color: "white" }}>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} sx={{ color: "white" }} />
             </ListItem>
